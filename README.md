@@ -1,11 +1,13 @@
 # mjpeg-proxy
 
 This program can read an mjpeg stream and write the images to disk in a heirarchy of folders by date.
+
 Also proxies the images (images can be modified) into a new mjpeg stream onto a new port. 
 
 
 Usage of ./mjpeg-proxy:
-  -addr string
+
+-addr string
     	Server address (default ":8888")
   -cameraList string
     	if more than one camera, use commas to delimit (default "localhost:8080/mjpeg,localhost:8080/mjpeg")
@@ -40,6 +42,7 @@ It will read the mjpeg stream from port 8080 and proxy it to port 8888- also wri
 To test:
 
 open a web browser to:
+
 http://localhost:8080 (to see the original webcam mjpeg feed)
 
 and
