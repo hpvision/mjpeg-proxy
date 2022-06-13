@@ -37,3 +37,11 @@ Then in another teminal, start the proxy:
 
 It will read the mjpeg stream from port 8080 and proxy it to port 8888- also writing the images to disk in the data directory.
 
+To test:
+
+open a web browser to:
+http://localhost:8080 (to see the original webcam mjpeg feed)
+
+and
+
+http://localhost:8888 (to see the proxied feed on port 8888)
