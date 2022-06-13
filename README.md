@@ -38,7 +38,11 @@ go build
 
 # In one terminal, start the webcam to write an MJPEG stream on port 8080:
 
-./go-mjpeg/_examples/camera/camera
+cd go-mjpeg/_example/camera/
+
+go build
+
+./camera
 
 # Then in another teminal, start the proxy:
 
