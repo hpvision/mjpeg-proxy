@@ -46,7 +46,7 @@ go build
 
 # Then in another teminal, start the proxy:
 
-./go-mjpeg
+./mjpeg-proxy
 
 It will read the mjpeg stream from port 8080 and proxy it to port 8888- also writing the images to disk in the data directory.
 
