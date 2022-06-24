@@ -47,6 +47,7 @@ go build
 # Then in another teminal, start the proxy:
 
 (if you have not already downloaded and built this code)
+
 git clone https://github.com/hpvision/mjpeg-proxy.git
 cd mjpeg-proxy
 go build
