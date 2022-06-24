@@ -48,6 +48,17 @@ git clone https://github.com/hpvision/mjpeg-proxy.git
 cd mjpeg-proxy
 go build
 
+./mjpeg-proxy -h
+Usage of ./mjpeg-proxy:
+  -addr string
+    	Server address (default ":8888")
+  -cameraList string
+    	if more than one camera, use commas to delimit (default "localhost:8080/mjpeg,localhost:8080/mjpeg")
+  -d string
+    	relative path of static files to save images to (default "images")
+  -interval duration
+    	interval (default 200ms)
+
 ./mjpeg-proxy
 ```
 It will read the mjpeg stream from port 8080 and proxy it to port 8888- also writing the images to disk in the data directory.
