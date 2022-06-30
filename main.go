@@ -24,6 +24,7 @@ var (
 	addr       = flag.String("addr", ":8888", "Server address")                                                                           //must start with sudo if it runs on low port number like 80
 	interval   = flag.Duration("interval", 200*time.Millisecond, "interval")
 	directory  = flag.String("d", "images", "relative path of static files to save images to")
+	header     = flag.String("header", "Yolo-Coordinates", "optional header value read from the mjpeg stream to add as part of the filename")
 )
 
 func getMjpegStream(cameraUrl string) (*mjpeg.Decoder, error) {
@@ -60,6 +61,7 @@ func proxy(wg *sync.WaitGroup, stream *mjpeg.Stream, cameraLink string) {
 			continue
 		}
 		p, err := dec.Part()
+		tag := p.Header.Get(*header)
 
 		if err != nil {
 			log.Printf("error decoding Part=%v err=%v\n", cameraUrl, err.Error())
@@ -68,7 +70,6 @@ func proxy(wg *sync.WaitGroup, stream *mjpeg.Stream, cameraLink string) {
 			continue
 		}
 
-		name := "nobody"
 		img, err := jpeg.Decode(p)
 		if err != nil {
 			log.Printf("error decoding image=%v err=%v\n", cameraUrl, err.Error())
@@ -87,7 +88,7 @@ func proxy(wg *sync.WaitGroup, stream *mjpeg.Stream, cameraLink string) {
 		hour := now.Hour()
 		hr, min, sec := now.Clock()
 		path := *directory + "/all/" + weekday.String() + "/" + strconv.Itoa(hour) //hourly rotation for images
-		filename := fmt.Sprintf("%v-%d%02d%02d%v.jpg", strings.Replace(cameraName, "/", "-", -1), hr, min, sec, name)
+		filename := fmt.Sprintf("%v-%d%02d%02d%v.jpg", strings.Replace(cameraName, "/", "-", -1), hr, min, sec, tag)
 		writeImage(buf.Bytes(), path, filename) //write all images
 		stream.Update(buf.Bytes())
 	}
