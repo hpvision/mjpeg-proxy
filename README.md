@@ -63,14 +63,15 @@ Usage of ./mjpeg-proxy:
 ./mjpeg-proxy
 ```
 
+It will read the mjpeg stream from port 8080 and proxy it to port 8888- also writing the images to disk in the data directory.
+
+
 Optional example build for another architecture:
 ```
 GOOS=linux GOARCH=arm64 go build -o mjpeg-proxy.arm64
 then scp over:
 scp mjpeg-proxy.arm64 root@host:/root
 ```
-
-It will read the mjpeg stream from port 8080 and proxy it to port 8888- also writing the images to disk in the data directory.
 
 # To test:
 
