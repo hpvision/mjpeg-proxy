@@ -36,7 +36,7 @@ go build
 
 # In one terminal, start the webcam to write an MJPEG stream on port 8080:
 ```
-cd go-mjpeg/_example/camera/
+cd _example/camera/
 go build
 ./camera
 ```
