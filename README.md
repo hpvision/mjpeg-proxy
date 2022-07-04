@@ -40,6 +40,15 @@ cd go-mjpeg/_example/camera/
 go build
 ./camera
 ```
+
+Optional example build for another architecture:
+```
+GOOS=linux GOARCH=arm64 go build -o mjpeg-proxy.arm64
+then scp over:
+scp mjpeg-proxy.arm64 root@host:/root
+```
+
+
 # Then in another teminal, start the proxy:
 
 (if you have not already downloaded and built this code)

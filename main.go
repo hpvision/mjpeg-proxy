@@ -20,11 +20,12 @@ import (
 
 var streamList []*mjpeg.Stream
 var (
-	cameraList = flag.String("cameraList", "localhost:8080/mjpeg,localhost:8080/mjpeg", "if more than one camera, use commas to delimit") //variable number of MJPEG cameras
-	addr       = flag.String("addr", ":8888", "Server address")                                                                           //must start with sudo if it runs on low port number like 80
+	cameraList = flag.String("cameraList", "localhost:8080/mjpeg,localhost:8080/mjpeg", "You can use commas to delimit multiple camera server addresses") //variable number of MJPEG cameras
+	addr       = flag.String("addr", ":8888", "Proxy server address")                                                                                     //must start with sudo if it runs on low port number like 80
 	interval   = flag.Duration("interval", 200*time.Millisecond, "interval")
-	directory  = flag.String("d", "images", "relative path of static files to save images to")
-	header     = flag.String("header", "Yolo-Coordinates", "optional header value read from the mjpeg stream to add as part of the filename")
+	path       = flag.String("path", "path", "relative path of static files to save images to")
+	header     = flag.String("header", "", "optional header value read from the mjpeg stream to add as part of the filename")
+	debug      = flag.Bool("debug", false, "debug mode to see headers of the MJPEG stream")
 )
 
 func getMjpegStream(cameraUrl string) (*mjpeg.Decoder, error) {
@@ -61,15 +62,16 @@ func proxy(wg *sync.WaitGroup, stream *mjpeg.Stream, cameraLink string) {
 			continue
 		}
 		p, err := dec.Part()
-		tag := p.Header.Get(*header)
-
 		if err != nil {
 			log.Printf("error decoding Part=%v err=%v\n", cameraUrl, err.Error())
 			time.Sleep(time.Second)
 			dec, _ = getMjpegStream(cameraUrl) //restart HTTP request
 			continue
 		}
-
+		if *debug {
+			fmt.Printf("MJPEG Stream Headers:%+v\n", p.Header)
+		}
+		tag := p.Header.Get(*header)
 		img, err := jpeg.Decode(p)
 		if err != nil {
 			log.Printf("error decoding image=%v err=%v\n", cameraUrl, err.Error())
@@ -87,7 +89,7 @@ func proxy(wg *sync.WaitGroup, stream *mjpeg.Stream, cameraLink string) {
 		weekday := now.Weekday()
 		hour := now.Hour()
 		hr, min, sec := now.Clock()
-		path := *directory + "/all/" + weekday.String() + "/" + strconv.Itoa(hour) //hourly rotation for images
+		path := *path + "/all/" + weekday.String() + "/" + strconv.Itoa(hour) //hourly rotation for images
 		filename := fmt.Sprintf("%v-%d%02d%02d%v.jpg", strings.Replace(cameraName, "/", "-", -1), hr, min, sec, tag)
 		writeImage(buf.Bytes(), path, filename) //write all images
 		stream.Update(buf.Bytes())
@@ -128,7 +130,7 @@ func main() {
 
 	}
 
-	http.Handle("/images/", http.StripPrefix("/images", http.FileServer(http.Dir(*directory))))
+	http.Handle("/images/", http.StripPrefix("/images", http.FileServer(http.Dir(*path))))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
