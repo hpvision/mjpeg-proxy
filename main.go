@@ -136,6 +136,13 @@ func main() {
 		w.Header().Set("Content-Type", "text/html")
 		w.Write([]byte(`<html>`))
 		w.Write([]byte(`<body>`))
+		w.Write([]byte(`<style>                                                                                                                                                        
+		img {                                                                                                                                                          
+		width: 600px;                                                                                                                                                  
+		height: auto;                                                                                                                                                  
+		}                                                                                                                                                              
+		</style> 
+		`))
 		for i := range streamList {
 			line := "<img src=\"http://" + r.Host + "/" + strconv.Itoa(i) + "\" />"
 			w.Write([]byte(line))
