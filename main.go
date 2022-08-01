@@ -86,10 +86,10 @@ func proxy(wg *sync.WaitGroup, stream *mjpeg.Stream, cameraLink string) {
 		}
 		cameraName := cameraUrl[7:] //skip http:// chars
 		now := time.Now()
-		weekday := now.Weekday()
+		ymd := now.Format("2006-01-02")
 		hour := now.Hour()
 		hr, min, sec := now.Clock()
-		path := *path + "/all/" + weekday.String() + "/" + strconv.Itoa(hour) //hourly rotation for images
+		path := *path + "/all/" + ymd + "/" + strconv.Itoa(hour) //hourly rotation for images
 		filename := fmt.Sprintf("%v-%d%02d%02d%v.jpg", strings.Replace(cameraName, "/", "-", -1), hr, min, sec, tag)
 		writeImage(buf.Bytes(), path, filename) //write all images
 		stream.Update(buf.Bytes())
@@ -97,7 +97,7 @@ func proxy(wg *sync.WaitGroup, stream *mjpeg.Stream, cameraLink string) {
 }
 
 func writeImage(b []byte, path string, filename string) {
-	err := os.MkdirAll(path, 0777) //"Sunday"=0
+	err := os.MkdirAll(path, 0777)
 	if err != nil {
 		println("mkdir error=", err.Error())
 		return
